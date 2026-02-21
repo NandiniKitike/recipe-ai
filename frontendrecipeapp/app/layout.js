@@ -13,19 +13,19 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-     <ClerkProvider appearance={{baseTheme:neobrutalism}}>
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className}`}
-      ><Header/>
-        <main className="min-h-screen">{children}</main>
-        <footer className="py-8 px-4 border-t">
-          <div className="max-w-6xl mx-auto flex justify-centeritems-center">
-          
-          </div>
-        </footer>
+      <body className={inter.className}>
+        <ClerkProvider appearance={{ baseTheme: neobrutalism }}>
+          <Header />
+          <main className="min-h-screen pt-16">
+            {children}
+          </main>
+          <footer className="py-8 px-4 border-t">
+            <div className="max-w-6xl mx-auto flex justify-center items-center">
+            </div>
+          </footer>
+        </ClerkProvider>
       </body>
     </html>
-    </ClerkProvider>
   );
-}   
+}

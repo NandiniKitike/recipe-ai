@@ -1,4 +1,5 @@
-import { currentUser } from '@clerk/nextjs/dist/types/server'
+import { auth, currentUser } from "@clerk/nextjs/server";
+
 import React from 'react'
 const STRAPI_URL= 
 process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
@@ -13,7 +14,9 @@ const checkUser = async () => {
     console.log("No STRAPI_API_TOKEN found")
     return null
   }
-  const subscriptionTier= "free"
+
+  const {has} = await auth()
+  const subscriptionTier= has({plan: "pro"}) ? "pro": "free"
   try{
 const existingUserResponse = await fetch(
     `${STRAPI_URL}/api/users?filters[clerkId][$eq]=${user.id}`,
@@ -21,7 +24,7 @@ const existingUserResponse = await fetch(
         headers:{
             Authorization: `Bearer ${STRAPI_API_TOKEN}`
         },
-ccache: "no-store"
+cache: "no-store"
     }
 )
 if(!existingUserResponse.ok){
@@ -47,18 +50,57 @@ await fetch(`${STRAPI_URL}/api/users/${existingUser.id}`, {
 
   return {...existingUser, subscriptionTier}
   }
-  const releresponse = await fetch(
+  const rolesResponse = await fetch(
     `${STRAPI_URL}/api/users-permissions/roles`,
     {
         headers:{
-            Authorization: 
+            Authorization:  `Bearer ${STRAPI_API_TOKEN}`,
+
         }
     }
   )
-}
-  }catch(error){
+  const rolesData = await rolesResponse.json();
+  const authenticatedRole= rolesData.roles.find(
+    (role) => role.type === "authenticated"
+  );
+  if(!authenticatedRole){
+    console.log("Authenticated role not found in Strapi")
+    return null
+  }
+  const userData = {
+    username:
+    user.username || user.emailAddresses[0].emailAddress.split("@")[0],
+    email:user.emailAddresses[0].emailAddress,
+    password: `clerk_managed_${user.id}_${Date.now()}`,
+    confirmed: true,
+    blocked: false,
+    firstName: user.firstName,
+    lastName: user.lastName,
+   imageUrl: user.imageUrl,
+    clerkId: user.id,
+    subscriptionTier,
+    role: authenticatedRole.id,
+  };
+  const newUserResponse = await fetch(`${STRAPI_URL}/api/users`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${STRAPI_API_TOKEN}`,
+      "Content-Type": "application/json"
+  },
+  body: JSON.stringify(userData)
+  })
+  if(!newUserResponse.ok){
+    const errorText = await newUserResponse.text()
+    console.error("Error creating user in Strapi:", errorText)
+    return null
+  }
+  const newUser = await newUserResponse.json()
+  return {...newUser, subscriptionTier}
+  }
+  catch(error){
     console.error("Error checking user:", error)
     return null
   }
 
-
+}
+export default checkUser
