@@ -17,8 +17,8 @@ import { Cookie, Refrigerator, Sparkles } from 'lucide-react'
 import UserDropdown from './UserDropdown'
 import checkUser from '@/lib/checkUser'
 import PricingModel from './PricingModel'
-const Header =  async () => {
-    const {user} = await checkUser() 
+const Header = async () => {
+    const { user } = await checkUser()
     return (
         <header className="fixed top-0 w-full border-b border-stone-200 bg-stone-50/80 backdrop-blur-md z-50 supports-backdrop-filter:bg-stone-50/60">
             <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -42,25 +42,23 @@ const Header =  async () => {
                         {user && <PricingModel subscriptionTier={user.subscriptionTier}>
                             <Badge
                                 variant="outline"
-                                className={`flex h-8 px-3 gap-1.5 rounded-full text-xs font-semibold transition-all ${
-                                    user.subscriptionTier === "pro" ? "bg-linear-to-r from-orange-600 to-amber-500 text-white border-none shadow-sm"
-                                    : "bg-stone-200/50 text-stone-600 border-stone-200 cursor-pointer hover:bg-stone-300/50 hover:bg-stone-300/50 hover:border-stone-300"
-                                }`}
+                                className={`flex h-8 px-3 gap-1.5 rounded-full text-xs font-semibold transition-all ${user.subscriptionTier === "pro" ? "bg-linear-to-r from-orange-600 to-amber-500 text-white border-none shadow-sm"
+                                        : "bg-stone-200/50 text-stone-600 border-stone-200 cursor-pointer hover:bg-stone-300/50 hover:bg-stone-300/50 hover:border-stone-300"
+                                    }`}
                             >
-                          
+
                                 <Sparkles
-                                className={`h-3 w-3 ${
-                                    user.subscriptionTier === "pro" ? "text-white fill-white/20" : "text-stone-500"
-                                }`}
+                                    className={`h-3 w-3 ${user.subscriptionTier === "pro" ? "text-white fill-white/20" : "text-stone-500"
+                                        }`}
                                 />
                                 <span>
-                                    {user.subscriptionTier === "pro"? "Pro Chef" : "Free Plan"}
-                                </span> 
+                                    {user.subscriptionTier === "pro" ? "Pro Chef" : "Free Plan"}
+                                </span>
                             </Badge>
-                            </PricingModel>}
+                        </PricingModel>}
                         <UserDropdown />
                     </SignedIn>
-                      <SignedOut>
+                    <SignedOut>
                         <SignInButton>
                             <Button variant="ghost" className="text-stone-600 hover:text-orange-600 hover:bg-orange-50 font-medium">
                                 Sign In
