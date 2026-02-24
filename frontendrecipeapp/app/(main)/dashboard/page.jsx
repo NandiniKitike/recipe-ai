@@ -1,5 +1,6 @@
 import { getAreas, getCategories, getRecipeOfTheDay } from "@/actions/mealdb.actions";
-import { Flame } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Badge, Flame, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react"
@@ -54,7 +55,7 @@ const Dashboard = async () => {
                                                 variant="outline"
                                                 className="border-2 border-orange-600 text-orange-700 bg-orange-50 font-bold"
                                             >
-                                                {getRecipeOfTheDay.strCategory}
+                                                {recipOfTheDay.strCategory}
 
                                             </Badge>
                                             <Badge
@@ -62,10 +63,24 @@ const Dashboard = async () => {
                                                 className="border-2 border-stone-900 text-stone-700 bg-stone-50 font-bold"
                                             >
                                                 <Globe className="w-3 h-3 mr-1" />
+                                                {recipOfTheDay.strArea}
 
                                             </Badge>
 
                                         </div>
+                                        <h3 className="text-4xl md:text-5xl font-bold text-stone-900 mb-4 group-hover:text-orange-600 transition-colors leading-tight">
+                                            {recipOfTheDay.strMeal}
+
+                                        </h3>
+                                        <p className="text-stone-600 mb-6 line-clamp font-light text-lg">
+                                            {recipOfTheDay.strInstructions?.substring(0, 200)}
+
+                                        </p>
+                                        <Button variant="primary" size="lg" className="bg-orange-600 hover:bg-orange-700">
+                                            Start Cooking <ArrowRight className="w-5 h-5 ml-2" />
+
+                                        </Button>
+
 
                                     </div>
 
