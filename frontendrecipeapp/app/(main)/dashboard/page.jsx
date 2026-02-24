@@ -1,4 +1,7 @@
 import { getAreas, getCategories, getRecipeOfTheDay } from "@/actions/mealdb.actions";
+import { Flame } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import React from "react"
 const Dashboard = async () => {
     const recipeData = await getRecipeOfTheDay()
@@ -21,16 +24,56 @@ const Dashboard = async () => {
                     </p>
                 </div>
                 {/* //Recipe of the areasData */}
-                {recipeOfTheDay && (
+                {recipOfTheDay && (
                     <section className="mb-24 relative">
-                        <div className="flex items-center gap-2 mb-06">
+                        <div className="flex items-center gap-2 mb-6">
                             <Flame className="w-6 h-6 text-orange-600" />
-                            <h2 className="text-3xl font-serif fongt-bold text-stone-900">
-                                Recipe od the Day
+                            <h2 className="text-3xl font-serif font-bold text-stone-900">
+                                Recipe of the Day
 
                             </h2>
 
                         </div>
+                        <Link href={`/recipe?cook=${encodeURIComponent(
+                            recipOfTheDay.strMeal
+                        )}`}>
+                            <div className="relative bg-white border-2 border-stone-900 overflow-hidden hover:border-orange-600 hover:shadow-lg transition-all duration-300 group cursor-pointer">
+                                <div className="grid md:grid-cols-2 gap-0">
+                                    <div className="relative aspect-4/3 md:aspect-auto border-b-2 md:border-b-0 md:border-r-2 border-stone-900">
+                                        <Image
+                                            src={recipOfTheDay.strMealThumb}
+                                            alt={recipOfTheDay.strMeal}
+                                            fill
+                                            className="object-cover"
+                                        />
+
+                                    </div>
+                                    <div className="p-8 md:p-12 flex flex-col justify-center">
+                                        <div className="flex flex-wrap gap-2 mb-6">
+                                            <Badge
+                                                variant="outline"
+                                                className="border-2 border-orange-600 text-orange-700 bg-orange-50 font-bold"
+                                            >
+                                                {getRecipeOfTheDay.strCategory}
+
+                                            </Badge>
+                                            <Badge
+                                                variant="outline"
+                                                className="border-2 border-stone-900 text-stone-700 bg-stone-50 font-bold"
+                                            >
+                                                <Globe className="w-3 h-3 mr-1" />
+
+                                            </Badge>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </Link>
 
                     </section>
                 )}
