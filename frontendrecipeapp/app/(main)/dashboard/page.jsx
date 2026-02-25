@@ -93,6 +93,38 @@ const Dashboard = async () => {
                     </section>
                 )}
 
+                <section className="mb-24">
+                    <div className="">
+                        <h2 className="text-stone-600 text-lg font-light">Browse by Category</h2>
+                        <p className="text-stone-600 text-lg font-light">
+                            Find recipes that match your mood
+
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                        {categories.map((category) => (
+                            <Link
+                                key={category.strCategory}
+                                href={`/recipes/category/${category.strCategory.toLowerCase()}`}
+                            >
+                                <div className="bg-white p-6 border-2 border-stone-200 hover:border-orange-600 hover:shadow-lg transition-all text-center group cursor-pointer">
+                                    <div className="text-4xl mb-3">
+                                        {getCategoryEmoji(category.strCategory)}
+
+                                    </div>
+                                    <h3 className="font-bold text-stone-900 group-hover:text-orange-600 transition-colors text-sm">
+                                        {category.strCategory}
+
+                                    </h3>
+
+                                </div>
+
+
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+
             </div>
         </div>
     )
