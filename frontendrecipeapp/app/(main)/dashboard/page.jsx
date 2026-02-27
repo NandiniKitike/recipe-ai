@@ -1,5 +1,6 @@
 import { getAreas, getCategories, getRecipeOfTheDay } from "@/actions/mealdb.actions";
 import { Button } from "@/components/ui/button";
+import { getCategoryEmoji, getCountryFlag } from "@/lib/data";
 import { ArrowRight, Badge, Flame, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -124,7 +125,31 @@ const Dashboard = async () => {
                         ))}
                     </div>
                 </section>
+                <section className="mb-25">
+                    <div className="mb-8">
+                        <h2 className="text-4xl md:text-5xl font-bold text-stone-900 mb-2">
+                            Explore World Cuisines
+                        </h2>
+                        <p className="text-stone-600 text-lg font-light">
+                            Travel the globe through food
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                        {areas.map((area) => (
+                            <Link key={area.strArea} href={`/recipes/category/${area.strArea.toLowerCase().replace(/\s+/g, "-")}`}>
+                                <div className="bg-white p-6 border-2 border-stone-200 hover:border-orange-600 hover:shadow-lg transition-all text-center group cursor-pointer flex gap-3 items-center justify-center">
+                                    <span className="text-3xl">
+                                        {getCountryFlag(area.strArea)}
+                                    </span>
+                                    <span className="font-bold text-stone-900 group-hover:text-orange-600 transition-colors text-sm">
+                                        {area.strArea}
+                                    </span>
+                                </div>
+                            </Link>
+                        ))}
 
+                    </div>
+                </section>
             </div>
         </div>
     )
