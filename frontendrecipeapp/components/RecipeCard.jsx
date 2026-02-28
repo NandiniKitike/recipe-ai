@@ -32,7 +32,12 @@ const RecipeCard = ({ recipe, variant = "default" }) => {
                                 className="object-cover"
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw 33vw"
                             />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                                    Click to view recipe
+                                </div>
 
+                            </div>
                         </div>
                     ) : (
                         <div>
@@ -40,7 +45,7 @@ const RecipeCard = ({ recipe, variant = "default" }) => {
                         </div>
                     )}
                     <CardHeader>
-                        <CardTitle className="text-lg font-bold text-stone-900 group-hover:text-orange-600 transition-colors line-clamp-2">{data.title}
+                        <CardTitle className="text-lg font-bold text-group-hover:text-orange-600 transition-colors line-clamp-2">{data.title}
 
                         </CardTitle>
                     </CardHeader>
