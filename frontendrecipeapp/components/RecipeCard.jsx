@@ -1,6 +1,9 @@
+import Link from "next/link";
 import React from "react"
+import { Card, CardHeader, CardTitle } from "./ui/card";
+import Image from "next/image";
 const RecipeCard = ({ recipe, variant = "default" }) => {
-    const gettRecipeData = () => {
+    const getRecipeData = () => {
         if (recipe.strMeal) {
             return {
                 title: recipe.strMeal,
