@@ -9,7 +9,11 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
 export async function scanPantryImage(formData) {
     try {
-        const image = formData.get("image");
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" })
+        const user = await checkUser();
+        if (!user) {
+            throw new Error("User not authenticated")
+        }
+        const isPro = user.subscriptionTier == "pro"
     }
+    catch (error) { }
 }
