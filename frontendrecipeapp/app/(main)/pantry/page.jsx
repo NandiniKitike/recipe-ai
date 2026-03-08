@@ -9,6 +9,23 @@ const PantryPage = () => {
     const [editingId, setEditingId] = useState(null)
     const [edutValues, setEditValues] = useState({ name: "", quantity: "" })
 
+    const {
+        loading: loadingItems,
+        data: itemsData,
+        fn: fetchItems,
+
+    } = useFetch(getPantryItems)
+    const {
+        loading: deleting,
+        data: deleteData,
+        fn: deleteItem
+    } = useFetch(deletePantryItem)
+    const {
+        loading: updating,
+        data: updateData,
+        fn: updateItem
+    } = useFetch(updatePantryItem)
+
     const handleModalSuccess = () => {
         setIsModalOpen(false)
     }

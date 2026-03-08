@@ -12,7 +12,7 @@ const UserDropdown = () => {
                 href="/recipes"
             />
             <UserButton.Link
-                label="My Recipes"
+                label="My Pantry"
                 labelIcon={<Refrigerator size={16} />}
                 href="/pantry"
             />
