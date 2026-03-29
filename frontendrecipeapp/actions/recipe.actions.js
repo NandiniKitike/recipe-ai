@@ -22,6 +22,64 @@ function normalizeTitle(title) {
     .join(" ");
 }
 
+function extractJson(text) {
+  if (!text) return "";
+  const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+  const first = cleaned.indexOf("{");
+  const last = cleaned.lastIndexOf("}");
+  if (first === -1 || last === -1 || last <= first) return cleaned;
+  return cleaned.slice(first, last + 1);
+}
+
+function escapeNewlinesInStrings(input) {
+  let out = "";
+  let inString = false;
+  let escaped = false;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (escaped) {
+      out += ch;
+      escaped = false;
+      continue;
+    }
+    if (ch === "\\") {
+      out += ch;
+      escaped = true;
+      continue;
+    }
+    if (ch === "\"") {
+      out += ch;
+      inString = !inString;
+      continue;
+    }
+    if (inString && (ch === "\n" || ch === "\r")) {
+      out += "\\n";
+      if (ch === "\r" && input[i + 1] === "\n") {
+        i++;
+      }
+      continue;
+    }
+    out += ch;
+  }
+  return out;
+}
+
+// Convert plain text description into Strapi "blocks" format
+function toBlocks(description) {
+  if (!description) return [];
+  if (Array.isArray(description)) return description;
+  if (typeof description === "object") return description;
+
+  const text = String(description).trim();
+  if (!text) return [];
+
+  const paragraphs = text.split(/\\n\\s*\\n/).map((p) => p.trim()).filter(Boolean);
+  return paragraphs.map((p) => ({
+    type: "paragraph",
+    children: [{ type: "text", text: p }],
+  }));
+}
+
 // Helper function to fetch image from Unsplash
 async function fetchRecipeImage(recipeName) {
   try {
@@ -101,6 +159,16 @@ export async function getOrGenerateRecipe(formData) {
       if (searchData.data && searchData.data.length > 0) {
         console.log("✅ Recipe found in database:", searchData.data[0].id);
 
+        const recipeRecord = searchData.data[0];
+        const recipeFromDb = recipeRecord?.attributes
+          ? { id: recipeRecord.id, ...recipeRecord.attributes }
+          : recipeRecord;
+        const normalizedRecipe = {
+          ...recipeFromDb,
+          substitutions:
+            recipeFromDb.substitutions || recipeFromDb.subscriptions || [],
+        };
+
         // Check if user has saved this recipe
         const savedRecipeResponse = await fetch(
           `${STRAPI_URL}/api/saved-recipes?filters[user][id][$eq]=${user.id}&filters[recipe][id][$eq]=${searchData.data[0].id}`,
@@ -120,8 +188,8 @@ export async function getOrGenerateRecipe(formData) {
 
         return {
           success: true,
-          recipe: searchData.data[0],
-          recipeId: searchData.data[0].id,
+          recipe: normalizedRecipe,
+          recipeId: recipeRecord.id,
           isSaved: isSaved,
           fromDatabase: true,
           isPro,
@@ -211,14 +279,16 @@ Guidelines:
     // Parse JSON response
     let recipeData;
     try {
-      const cleanText = text
-        .replace(/```json\n?/g, "")
-        .replace(/```\n?/g, "")
-        .trim();
+      const cleanText = extractJson(text);
       recipeData = JSON.parse(cleanText);
     } catch (parseError) {
-      console.error("Failed to parse Gemini response:", text);
-      throw new Error("Failed to generate recipe. Please try again.");
+      try {
+        const repaired = escapeNewlinesInStrings(extractJson(text));
+        recipeData = JSON.parse(repaired);
+      } catch (reparseError) {
+        console.error("Failed to parse Gemini response:", text);
+        throw new Error("Failed to generate recipe. Please try again.");
+      }
     }
 
     // FORCE the title to be our normalized version
@@ -257,15 +327,23 @@ Guidelines:
       "moroccan",
       "brazilian",
       "caribbean",
-      "middle-eastern",
+      "middle - eastern",
       "british",
       "german",
       "portuguese",
       "other",
     ];
-    const cuisine = validCuisines.includes(recipeData.cuisine?.toLowerCase())
-      ? recipeData.cuisine.toLowerCase()
-      : "other";
+    const cuisineNormalized = recipeData.cuisine
+      ?.toLowerCase()
+      .replace(/-/g, " ")
+      .replace(/\\s+/g, " ")
+      .trim();
+    const cuisine =
+      cuisineNormalized === "middle eastern"
+        ? "middle - eastern"
+        : validCuisines.includes(cuisineNormalized)
+        ? cuisineNormalized
+        : "other";
 
     // Step 3: Fetch image from Unsplash
     console.log("🖼️ Fetching image from Unsplash...");
@@ -275,7 +353,7 @@ Guidelines:
     const strapiRecipeData = {
       data: {
         title: normalizedTitle,
-        description: recipeData.description,
+        description: toBlocks(recipeData.description),
         cuisine,
         category,
         ingredients: recipeData.ingredients,
@@ -285,7 +363,7 @@ Guidelines:
         servings: Number(recipeData.servings),
         nutrition: recipeData.nutrition,
         tips: recipeData.tips,
-        substitutions: recipeData.substitutions,
+        subscriptions: recipeData.substitutions,
         imageUrl: imageUrl || "",
         isPublic: true,
         author: user.id,
@@ -308,8 +386,14 @@ Guidelines:
 
     if (!createRecipeResponse.ok) {
       const errorText = await createRecipeResponse.text();
-      console.error("❌ Failed to save recipe:", errorText);
-      throw new Error("Failed to save recipe to database");
+      console.error(
+        "Failed to save recipe:",
+        createRecipeResponse.status,
+        errorText
+      );
+      throw new Error(
+        `Failed to save recipe to database (HTTP ${createRecipeResponse.status}). ${errorText}`
+      );
     }
 
     const createdRecipe = await createRecipeResponse.json();
@@ -568,16 +652,18 @@ Rules:
 
     let recipeSuggestions;
     try {
-      const cleanText = text
-        .replace(/```json\n?/g, "")
-        .replace(/```\n?/g, "")
-        .trim();
+      const cleanText = extractJson(text);
       recipeSuggestions = JSON.parse(cleanText);
     } catch (parseError) {
-      console.error("Failed to parse Gemini response:", text);
-      throw new Error(
-        "Failed to generate recipe suggestions. Please try again."
-      );
+      try {
+        const repaired = escapeNewlinesInStrings(extractJson(text));
+        recipeSuggestions = JSON.parse(repaired);
+      } catch (reparseError) {
+        console.error("Failed to parse Gemini response:", text);
+        throw new Error(
+          "Failed to generate recipe suggestions. Please try again."
+        );
+      }
     }
 
     return {
@@ -633,3 +719,4 @@ export async function getSavedRecipes() {
     throw new Error(error.message || "Failed to load saved recipes");
   }
 }
+
