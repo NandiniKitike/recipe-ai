@@ -1,15 +1,18 @@
 import arcjet, { shield, tokenBucket, detectBot } from "@arcjet/next";
 
+const key = process.env.ARCJET_KEY;
+
+if (!key) {
+  throw new Error("ARCJET_KEY environment variable is not set");
+}
+
 // Base Arcjet instance with global protections
 export const aj = arcjet({
-    key: process.env.ARCJET_KEY,
+    key: key,
     rules: [
-        // Shield WAF - protect against common attacks
         shield({
-            mode: "LIVE", // Use "DRY_RUN" during development to test
+            mode: "LIVE",
         }),
-
-        // Bot protection - allow search engines only
         detectBot({
             mode: "LIVE",
             allow: ["CATEGORY:SEARCH_ENGINE"],
@@ -21,10 +24,10 @@ export const aj = arcjet({
 export const freePantryScans = aj.withRule(
     tokenBucket({
         mode: "LIVE",
-        characteristics: ["userId"], // Track by Clerk user ID
-        refillRate: 10, // 10 tokens
-        interval: "30d", // per month (30 days)
-        capacity: 10, // max 10 tokens
+        characteristics: ["userId"],
+        refillRate: 10,
+        interval: "30d",
+        capacity: 10,
     })
 );
 
@@ -39,8 +42,7 @@ export const freeMealRecommendations = aj.withRule(
     })
 );
 
-// Pro tier - effectively unlimited (very high limits)
-// 1000 requests per day should be more than enough for any user
+// Pro tier
 export const proTierLimit = aj.withRule(
     tokenBucket({
         mode: "LIVE",
