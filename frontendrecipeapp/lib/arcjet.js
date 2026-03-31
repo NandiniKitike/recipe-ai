@@ -1,10 +1,6 @@
 import arcjet, { shield, tokenBucket, detectBot } from "@arcjet/next";
 
-const key = process.env.ARCJET_KEY;
-
-if (!key) {
-  throw new Error("ARCJET_KEY environment variable is not set");
-}
+const key = process.env.ARCJET_KEY || "ajkey_placeholder";
 
 // Base Arcjet instance with global protections
 export const aj = arcjet({
