@@ -24,13 +24,46 @@ const styles = StyleSheet.create({
   },
 });
 
+function getDescriptionText(description) {
+  if (!description) return "";
+  if (typeof description === "string") return description;
+  if (Array.isArray(description)) {
+    return description
+      .map((block) => {
+        if (typeof block === "string") return block;
+        if (!block || typeof block !== "object") return "";
+        if (Array.isArray(block.children)) {
+          return block.children
+            .map((child) => (child?.text ? String(child.text) : ""))
+            .filter(Boolean)
+            .join("");
+        }
+        return block.text ? String(block.text) : "";
+      })
+      .filter(Boolean)
+      .join("\n\n");
+  }
+  if (typeof description === "object") {
+    if (Array.isArray(description.children)) {
+      return description.children
+        .map((child) => (child?.text ? String(child.text) : ""))
+        .filter(Boolean)
+        .join("");
+    }
+    if (description.text) return String(description.text);
+  }
+  return String(description);
+}
+
 export function RecipePDF({ recipe }) {
+  const descriptionText = getDescriptionText(recipe.description);
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Title */}
         <Text style={styles.title}>{recipe.title}</Text>
-        <Text style={styles.text}>{recipe.description}</Text>
+        <Text style={styles.text}>{descriptionText}</Text>
 
         {/* Meta */}
         <View style={styles.section}>

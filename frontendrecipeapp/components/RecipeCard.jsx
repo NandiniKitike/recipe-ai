@@ -12,6 +12,37 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+function getDescriptionText(description) {
+  if (!description) return "";
+  if (typeof description === "string") return description;
+  if (Array.isArray(description)) {
+    return description
+      .map((block) => {
+        if (typeof block === "string") return block;
+        if (!block || typeof block !== "object") return "";
+        if (Array.isArray(block.children)) {
+          return block.children
+            .map((child) => (child?.text ? String(child.text) : ""))
+            .filter(Boolean)
+            .join("");
+        }
+        return block.text ? String(block.text) : "";
+      })
+      .filter(Boolean)
+      .join("\n\n");
+  }
+  if (typeof description === "object") {
+    if (Array.isArray(description.children)) {
+      return description.children
+        .map((child) => (child?.text ? String(child.text) : ""))
+        .filter(Boolean)
+        .join("");
+    }
+    if (description.text) return String(description.text);
+  }
+  return String(description);
+}
+
 export default function RecipeCard({ recipe, variant = "default" }) {
   // Handle different recipe data structures
   const getRecipeData = () => {
@@ -29,7 +60,7 @@ export default function RecipeCard({ recipe, variant = "default" }) {
     if (recipe.matchPercentage) {
       return {
         title: recipe.title,
-        description: recipe.description,
+        description: getDescriptionText(recipe.description),
         category: recipe.category,
         cuisine: recipe.cuisine,
         prepTime: recipe.prepTime,
@@ -47,7 +78,7 @@ export default function RecipeCard({ recipe, variant = "default" }) {
     if (recipe) {
       return {
         title: recipe.title,
-        description: recipe.description,
+        description: getDescriptionText(recipe.description),
         category: recipe.category,
         cuisine: recipe.cuisine,
         prepTime: recipe.prepTime,

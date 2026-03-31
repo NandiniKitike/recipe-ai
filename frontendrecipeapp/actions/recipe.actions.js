@@ -704,10 +704,29 @@ export async function getSavedRecipes() {
 
     const data = await response.json();
 
-    // Extract recipes from saved-recipes relations
-    const recipes = data.data
-      .map((savedRecipe) => savedRecipe.recipe)
-      .filter(Boolean); // Remove any null recipes
+    const normalizeRecipe = (input) => {
+      if (!input) return null;
+      const attributes = input.attributes || input;
+      const imageFromMedia =
+        attributes?.image?.data?.attributes?.url ||
+        attributes?.image?.url ||
+        null;
+      return {
+        id: input.id || attributes.id,
+        documentId: attributes.documentId || input.documentId,
+        ...attributes,
+        imageUrl: attributes.imageUrl || imageFromMedia || "",
+      };
+    };
+
+    // Extract recipes from saved-recipes relations (Strapi v4 shape)
+    const recipes = (data.data || [])
+      .map((savedRecipe) => {
+        const recipeRel =
+          savedRecipe?.attributes?.recipe?.data || savedRecipe?.recipe;
+        return normalizeRecipe(recipeRel);
+      })
+      .filter(Boolean);
 
     return {
       success: true,

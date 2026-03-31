@@ -33,6 +33,37 @@ import { RecipePDF } from "@/components/RecipePDF";
 import { ClockLoader } from "react-spinners";
 import ProLockedSection from "@/components/ProLockedSection";
 
+function getDescriptionText(description) {
+  if (!description) return "";
+  if (typeof description === "string") return description;
+  if (Array.isArray(description)) {
+    return description
+      .map((block) => {
+        if (typeof block === "string") return block;
+        if (!block || typeof block !== "object") return "";
+        if (Array.isArray(block.children)) {
+          return block.children
+            .map((child) => (child?.text ? String(child.text) : ""))
+            .filter(Boolean)
+            .join("");
+        }
+        return block.text ? String(block.text) : "";
+      })
+      .filter(Boolean)
+      .join("\n\n");
+  }
+  if (typeof description === "object") {
+    if (Array.isArray(description.children)) {
+      return description.children
+        .map((child) => (child?.text ? String(child.text) : ""))
+        .filter(Boolean)
+        .join("");
+    }
+    if (description.text) return String(description.text);
+  }
+  return String(description);
+}
+
 function RecipeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -211,6 +242,8 @@ function RecipeContent() {
   }
 
   // Main recipe view
+  const descriptionText = getDescriptionText(recipe.description);
+
   return (
     <div className="min-h-screen bg-stone-50 pt-24 pb-16 px-4">
       <div className="container mx-auto max-w-5xl">
@@ -262,7 +295,7 @@ function RecipeContent() {
 
             {/* Description */}
             <p className="text-lg text-stone-600 mb-6 font-light">
-              {recipe.description}
+              {descriptionText}
             </p>
 
             {/* Meta Info */}
