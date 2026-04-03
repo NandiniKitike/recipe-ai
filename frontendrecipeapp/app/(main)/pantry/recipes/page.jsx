@@ -34,6 +34,8 @@ export default function PantryRecipesPage() {
 
   const recipes = recipesData?.recipes || [];
   const ingredientsUsed = recipesData?.ingredientsUsed || "";
+  const errorCode = recipesData?.errorCode;
+  const errorMessage = recipesData?.error || recipesData?.message;
 
   return (
     <div className="min-h-screen bg-[#F7F5F2] pt-24 pb-16 px-4">
@@ -164,7 +166,7 @@ export default function PantryRecipesPage() {
         )}
 
         {/* Empty Pantry State */}
-        {!loading && recipes.length === 0 && recipesData?.success === false && (
+        {!loading && errorCode === "empty_pantry" && (
           <div className="bg-white/80 p-12 text-center border border-dashed border-black/10 rounded-2xl">
             <div className="bg-[#0FA3B1]/10 w-20 h-20 border border-[#0FA3B1]/30 flex items-center justify-center mx-auto mb-6 rounded-2xl">
               <AlertCircle className="w-10 h-10 text-[#0FA3B1]" />
@@ -196,7 +198,7 @@ export default function PantryRecipesPage() {
         )}
 
         {/* Rate Limit Reached */}
-        {!loading && recipesData === undefined && (
+        {!loading && errorCode === "rate_limit" && (
           <div className="bg-white/80 p-12 text-center border border-black/10 rounded-2xl">
             <div className="bg-[#0FA3B1]/10 w-20 h-20 border border-[#0FA3B1]/30 flex items-center justify-center mx-auto mb-6 rounded-2xl">
               <Sparkles className="w-10 h-10 text-[#0FA3B1]" />
@@ -216,6 +218,30 @@ export default function PantryRecipesPage() {
             </PricingModal>
           </div>
         )}
+
+        {/* Generic Error */}
+        {!loading &&
+          errorCode &&
+          errorCode !== "rate_limit" &&
+          errorCode !== "empty_pantry" && (
+            <div className="bg-white/80 p-12 text-center border border-dashed border-black/10 rounded-2xl">
+              <div className="bg-[#0FA3B1]/10 w-20 h-20 border border-[#0FA3B1]/30 flex items-center justify-center mx-auto mb-6 rounded-2xl">
+                <AlertCircle className="w-10 h-10 text-[#0FA3B1]" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#121212] mb-2">
+                Something went wrong
+              </h3>
+              <p className="text-[#5B5B5B] mb-8 max-w-md mx-auto font-light">
+                {errorMessage || "Please try again in a moment."}
+              </p>
+              <Button
+                onClick={() => fetchSuggestions(new FormData())}
+                className="bg-[#0FA3B1] hover:bg-[#0D8F9B] text-white gap-2"
+              >
+                Try Again
+              </Button>
+            </div>
+          )}
       </div>
     </div>
   );

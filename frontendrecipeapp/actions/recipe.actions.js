@@ -563,7 +563,19 @@ export async function getRecipesByPantryIngredients() {
   try {
     const user = await checkUser();
     if (!user) {
-      throw new Error("User not authenticated");
+      return {
+        success: false,
+        error: "User not authenticated",
+        errorCode: "unauthenticated",
+      };
+    }
+
+    if (!GEMINI_API_KEY) {
+      return {
+        success: false,
+        error: "AI configuration is missing.",
+        errorCode: "config",
+      };
     }
 
     // ✅ ARCJET RATE LIMIT CHECK
@@ -580,13 +592,20 @@ export async function getRecipesByPantryIngredients() {
 
     if (decision.isDenied()) {
       if (decision.reason.isRateLimit()) {
-        throw new Error(
-          `Monthly AI recipe limit reached. ${
+        return {
+          success: false,
+          error: `Monthly AI recipe limit reached. ${
             isPro ? "Please contact support." : "Upgrade to Pro!"
-          }`
-        );
+          }`,
+          errorCode: "rate_limit",
+          recommendationsLimit: isPro ? "unlimited" : 5,
+        };
       }
-      throw new Error("Request denied");
+      return {
+        success: false,
+        error: "Request denied",
+        errorCode: "request_denied",
+      };
     }
 
     // Get user's pantry items
@@ -601,7 +620,11 @@ export async function getRecipesByPantryIngredients() {
     );
 
     if (!pantryResponse.ok) {
-      throw new Error("Failed to fetch pantry items");
+      return {
+        success: false,
+        error: "Failed to fetch pantry items",
+        errorCode: "pantry_fetch_failed",
+      };
     }
 
     const pantryData = await pantryResponse.json();
@@ -610,6 +633,7 @@ export async function getRecipesByPantryIngredients() {
       return {
         success: false,
         message: "Your pantry is empty. Add ingredients first!",
+        errorCode: "empty_pantry",
       };
     }
 
@@ -675,7 +699,11 @@ Rules:
     };
   } catch (error) {
     console.error("❌ Error in getRecipesByPantryIngredients:", error);
-    throw new Error(error.message || "Failed to get recipe suggestions");
+    return {
+      success: false,
+      error: error.message || "Failed to get recipe suggestions",
+      errorCode: "server_error",
+    };
   }
 }
 
