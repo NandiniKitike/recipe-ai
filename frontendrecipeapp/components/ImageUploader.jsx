@@ -58,7 +58,7 @@ export default function ImageUploader({ onImageSelect, loading }) {
     // Preview Mode
     if (preview) {
         return (
-            <div className="relative w-full aspect-video bg-stone-100 rounded-2xl overflow-hidden border-2 border-stone-200">
+            <div className="relative w-full aspect-video bg-[#F7F5F2] rounded-2xl overflow-hidden border border-black/10">
                 <Image
                     src={preview}
                     alt="Pantry preview"
@@ -68,9 +68,9 @@ export default function ImageUploader({ onImageSelect, loading }) {
                 {!loading && (
                     <button
                         onClick={clearImage}
-                        className="absolute top-4 right-4 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
+                        className="absolute top-4 right-4 bg-white/95 hover:bg-white p-2 rounded-full shadow-lg transition-all"
                     >
-                        <X className="w-5 h-5 text-stone-700" />
+                        <X className="w-5 h-5 text-[#5B5B5B]" />
                     </button>
                 )}
                 {loading && (
@@ -88,8 +88,8 @@ export default function ImageUploader({ onImageSelect, loading }) {
             <div
                 {...getRootProps()}
                 className={`relative w-full aspect-square border-2 border-dashed rounded-2xl transition-all cursor-pointer ${isDragActive
-                        ? "border-orange-600 bg-orange-50 scale-[1.02]"
-                        : "border-stone-300 bg-stone-50 hover:border-orange-400 hover:bg-orange-50/50"
+                        ? "border-[#0FA3B1] bg-[#0FA3B1]/10 scale-[1.02]"
+                        : "border-black/10 bg-[#F7F5F2] hover:border-[#0FA3B1]/60 hover:bg-[#0FA3B1]/5"
                     }`}
             >
                 <input {...getInputProps()} />
@@ -97,22 +97,22 @@ export default function ImageUploader({ onImageSelect, loading }) {
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8 text-center">
                     {/* Icon */}
                     <div
-                        className={`p-4 rounded-full transition-all ${isDragActive ? "bg-orange-600 scale-110" : "bg-orange-100"
+                        className={`p-4 rounded-full transition-all ${isDragActive ? "bg-[#0FA3B1] scale-110" : "bg-[#0FA3B1]/10"
                             }`}
                     >
                         {isDragActive ? (
                             <ImageIcon className="w-8 h-8 text-white" />
                         ) : (
-                            <Camera className="w-8 h-8 text-orange-600" />
+                            <Camera className="w-8 h-8 text-[#0FA3B1]" />
                         )}
                     </div>
 
                     {/* Text */}
                     <div>
-                        <h3 className="text-xl font-bold text-stone-900 mb-2">
+                        <h3 className="text-xl font-bold text-[#121212] mb-2">
                             {isDragActive ? "Drop your image here" : "Scan Your Pantry"}
                         </h3>
-                        <p className="text-stone-600 text-sm max-w-sm">
+                        <p className="text-[#5B5B5B] text-sm max-w-sm">
                             {isDragActive
                                 ? "Release to upload"
                                 : "Take a photo or drag & drop an image of your fridge/pantry"}
@@ -129,7 +129,7 @@ export default function ImageUploader({ onImageSelect, loading }) {
                                     e.stopPropagation();
                                     fileInputRef.current?.click();
                                 }}
-                                className="bg-orange-600 hover:bg-orange-700 text-white gap-2"
+                                className="bg-[#0FA3B1] hover:bg-[#0D8F9B] text-white gap-2"
                             >
                                 <Camera className="w-4 h-4" />
                                 Take Photo
@@ -143,7 +143,7 @@ export default function ImageUploader({ onImageSelect, loading }) {
                                     e.stopPropagation();
                                     open();
                                 }}
-                                className="border-orange-200 text-orange-700 hover:bg-orange-50 gap-2"
+                                className="border-black/10 text-[#121212] hover:bg-white gap-2"
                             >
                                 <Upload className="w-4 h-4" />
                                 Browse Files
@@ -152,8 +152,8 @@ export default function ImageUploader({ onImageSelect, loading }) {
                     )}
 
                     {/* Helper Text */}
-                    <p className="text-xs text-stone-400">
-                        Supports JPG, PNG, WebP • Max 10MB
+                    <p className="text-xs text-[#8B8B8B]">
+                        Supports JPG, PNG, WebP - Max 10MB
                     </p>
                 </div>
             </div>

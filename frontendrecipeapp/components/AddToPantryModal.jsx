@@ -132,23 +132,23 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-none">
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-black/10 bg-white/95 shadow-[0_24px_60px_rgba(18,18,18,0.14)]">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold tracking-tight">
+                    <DialogTitle className="text-2xl font-bold tracking-tight text-[#121212]">
                         Add to Pantry
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="text-[#5B5B5B]">
                         Scan your pantry with AI or add items manually
                     </DialogDescription>
                 </DialogHeader>
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="scan" className="gap-2">
+                    <TabsList className="grid w-full grid-cols-2 bg-[#F7F5F2] border border-black/5">
+                        <TabsTrigger value="scan" className="gap-2 data-[state=active]:bg-white data-[state=active]:text-[#121212]">
                             <Camera className="w-4 h-4" />
                             AI Scan
                         </TabsTrigger>
-                        <TabsTrigger value="manual" className="gap-2">
+                        <TabsTrigger value="manual" className="gap-2 data-[state=active]:bg-white data-[state=active]:text-[#121212]">
                             <Plus className="w-4 h-4" />
                             Add Manually
                         </TabsTrigger>
@@ -167,7 +167,7 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                                 {selectedImage && !scanning && (
                                     <Button
                                         onClick={handleScan}
-                                        className="w-full bg-orange-600 hover:bg-orange-700 text-white h-12 text-lg"
+                                        className="w-full bg-[#0FA3B1] hover:bg-[#0D8F9B] text-white h-12 text-lg"
                                         disabled={scanning}
                                     >
                                         {scanning ? (
@@ -188,17 +188,17 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                             // Step 2: Review & Save
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <div>
-                                        <h3 className="text-lg font-bold text-stone-900">
-                                            Review Detected Items
-                                        </h3>
-                                        <p className="text-sm text-stone-600">
-                                            Found {scannedIngredients.length} ingredients
-                                        </p>
-                                    </div>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
+                                            <div>
+                                                <h3 className="text-lg font-bold text-[#121212]">
+                                                    Review Detected Items
+                                                </h3>
+                                                <p className="text-sm text-[#5B5B5B]">
+                                                    Found {scannedIngredients.length} ingredients
+                                                </p>
+                                            </div>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
                                         onClick={() => {
                                             setScannedIngredients([]);
                                             setSelectedImage(null);
@@ -215,20 +215,20 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                                     {scannedIngredients.map((ingredient, index) => (
                                         <div
                                             key={index}
-                                            className="flex items-center gap-3 p-4 bg-stone-50 rounded-xl border border-stone-200"
+                                            className="flex items-center gap-3 p-4 bg-[#F7F5F2] rounded-xl border border-black/10"
                                         >
                                             <div className="flex-1">
-                                                <div className="font-medium text-stone-900">
+                                                <div className="font-medium text-[#121212]">
                                                     {ingredient.name}
                                                 </div>
-                                                <div className="text-sm text-stone-500">
+                                                <div className="text-sm text-[#6B6B6B]">
                                                     {ingredient.quantity}
                                                 </div>
                                             </div>
                                             {ingredient.confidence && (
                                                 <Badge
                                                     variant="outline"
-                                                    className="text-xs text-green-700 border-green-200"
+                                                    className="text-xs text-[#0FA3B1] border-[#0FA3B1]/30"
                                                 >
                                                     {Math.round(ingredient.confidence * 100)}%
                                                 </Badge>
@@ -237,7 +237,7 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                                                 size="sm"
                                                 variant="ghost"
                                                 onClick={() => removeIngredient(index)}
-                                                className="text-stone-600 hover:text-red-600"
+                                                className="text-[#6B6B6B] hover:text-[#E4584F]"
                                             >
                                                 <X className="w-4 h-4" />
                                             </Button>
@@ -249,7 +249,7 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                                 <Button
                                     onClick={handleSaveScanned}
                                     disabled={saving || scannedIngredients.length === 0}
-                                    className="flex-1 bg-green-600 hover:bg-green-700 text-white h-12 w-full"
+                                    className="flex-1 bg-[#0FA3B1] hover:bg-[#0D8F9B] text-white h-12 w-full"
                                 >
                                     {saving ? (
                                         <>
@@ -271,7 +271,7 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                     <TabsContent value="manual" className="mt-6">
                         <form onSubmit={handleAddManual} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-stone-700 mb-2">
+                                <label className="block text-sm font-medium text-[#5B5B5B] mb-2">
                                     Ingredient Name
                                 </label>
                                 <input
@@ -281,13 +281,13 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                                         setManualItem({ ...manualItem, name: e.target.value })
                                     }
                                     placeholder="e.g., Chicken breast"
-                                    className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    className="w-full px-4 py-3 border border-black/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0FA3B1]"
                                     disabled={adding}
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-stone-700 mb-2">
+                                <label className="block text-sm font-medium text-[#5B5B5B] mb-2">
                                     Quantity
                                 </label>
                                 <input
@@ -297,7 +297,7 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                                         setManualItem({ ...manualItem, quantity: e.target.value })
                                     }
                                     placeholder="e.g., 500g, 2 cups, 3 pieces"
-                                    className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    className="w-full px-4 py-3 border border-black/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0FA3B1]"
                                     disabled={adding}
                                 />
                             </div>
@@ -305,7 +305,7 @@ export default function AddToPantryModal({ isOpen, onClose, onSuccess }) {
                             <Button
                                 type="submit"
                                 disabled={adding}
-                                className="flex-1 bg-orange-600 hover:bg-orange-700 text-white h-12 w-full"
+                                className="flex-1 bg-[#0FA3B1] hover:bg-[#0D8F9B] text-white h-12 w-full"
                             >
                                 {adding ? (
                                     <>

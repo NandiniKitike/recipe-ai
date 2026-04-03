@@ -1,10 +1,17 @@
-import { Inter } from "next/font/google";
+import { Playfair_Display, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { neobrutalism } from '@clerk/themes'
 import { Toaster } from "@/components/ui/sonner";
-const inter = Inter({ subsets: ["latin"] });
+const display = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-display",
+});
+const body = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-body",
+});
 
 
 export const metadata = {
@@ -15,7 +22,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${display.variable} ${body.variable} font-sans`}>
         <ClerkProvider appearance={{ baseTheme: neobrutalism }}>
           <Header />
           <main className="min-h-screen pt-16">

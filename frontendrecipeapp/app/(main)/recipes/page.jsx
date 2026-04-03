@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Bookmark, Loader2, ChefHat } from "lucide-react";
+import { Bookmark, Loader2, ChefHat, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import useFetch from "@/hooks/use-fetch";
@@ -22,65 +22,77 @@ export default function SavedRecipesPage() {
   const recipes = recipesData?.recipes || [];
 
   return (
-    <div className="min-h-screen bg-stone-50 pt-24 pb-16 px-4">
-      <div className="container mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="flex items-center gap-1 mb-8">
-          <Bookmark className="w-25 h-25 text-orange-600 " />
-          <div>
-            <h1 className="text-4xl md:text-6xl font-bold text-stone-900 tracking-tight leading-tight">
-              My Saved Recipes
-            </h1>
-            <p className="text-stone-600">
-              Your personal collection of favorite recipes
-            </p>
+    <div className="min-h-screen bg-[#F7F5F2] pt-24 pb-16 px-4">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(15,163,177,0.12),_transparent_55%),radial-gradient(circle_at_90%_10%,_rgba(255,138,91,0.12),_transparent_50%)]" />
+      <div className="container mx-auto max-w-6xl">
+        <div className="mb-10 rounded-[28px] border border-black/5 bg-white/80 p-8 shadow-[0_24px_60px_rgba(18,18,18,0.12)]">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0FA3B1]/10 text-[#0FA3B1]">
+                <Bookmark className="h-7 w-7" />
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[#0FA3B1]">Your cookbook</p>
+                <h1 className="mt-2 text-3xl md:text-4xl font-[family:var(--font-display)] font-semibold text-[#121212]">
+                  My Saved Recipes
+                </h1>
+                <p className="mt-2 text-sm text-[#5B5B5B]">
+                  Keep your favorites close and revisit them anytime.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link href="/dashboard">
+                <Button className="bg-[#0FA3B1] hover:bg-[#0D8F9B] text-white">
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Discover recipes
+                </Button>
+              </Link>
+              <Link href="/pantry">
+                <Button variant="outline" className="border-black/10 text-[#121212] hover:bg-white">
+                  Check pantry
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Loading State */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-12 h-12 text-orange-600 animate-spin mb-6" />
-            <p className="text-stone-600">Loading your saved recipes...</p>
+            <Loader2 className="w-12 h-12 text-[#0FA3B1] animate-spin mb-6" />
+            <p className="text-[#5B5B5B]">Loading your saved recipes...</p>
           </div>
         )}
 
-        {/* Recipes Grid */}
         {!loading && recipes.length > 0 && (
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid gap-6 lg:grid-cols-2">
             {recipes.map((recipe) => (
-              <RecipeCard
-                key={recipe.documentId}
-                recipe={recipe}
-                variant="list"
-              />
+              <RecipeCard key={recipe.documentId} recipe={recipe} variant="list" />
             ))}
           </div>
         )}
 
-        {/* Empty State */}
         {!loading && recipes.length === 0 && (
-          <div className="bg-white rounded-3xl p-12 text-center border-2 border-dashed border-stone-200">
-            <div className="bg-orange-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Bookmark className="w-10 h-10 text-orange-600" />
+          <div className="rounded-[28px] border border-dashed border-black/10 bg-white/80 p-12 text-center">
+            <div className="bg-[#0FA3B1]/10 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Bookmark className="w-10 h-10 text-[#0FA3B1]" />
             </div>
-            <h3 className="text-2xl font-bold text-stone-900 mb-2">
-              No Saved Recipes Yet
+            <h3 className="text-2xl font-semibold text-[#121212] mb-2">
+              No saved recipes yet
             </h3>
-            <p className="text-stone-600 mb-8 max-w-md mx-auto">
-              Start exploring recipes and save your favorites to build your
-              personal cookbook!
+            <p className="text-[#5B5B5B] mb-8 max-w-md mx-auto">
+              Start exploring recipes and save your favorites to build your personal cookbook.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/dashboard">
-                <Button className="bg-orange-600 hover:bg-orange-700 text-white gap-2">
+                <Button className="bg-[#0FA3B1] hover:bg-[#0D8F9B] text-white gap-2">
                   <ChefHat className="w-4 h-4" />
-                  Explore Recipes
+                  Explore recipes
                 </Button>
               </Link>
               <Link href="/pantry">
-                <Button variant="outline" className="border-stone-300 gap-2">
-                  Check Your Pantry
+                <Button variant="outline" className="border-black/10 text-[#121212] gap-2">
+                  Check your pantry
                 </Button>
               </Link>
             </div>

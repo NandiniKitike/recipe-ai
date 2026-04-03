@@ -42,19 +42,19 @@ export default function HowToCookModal() {
     return (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <button className="hover:text-orange-600 transition-colors flex items-center gap-1.5 text-sm font-medium text-stone-600">
+                <button className="hover:text-[#0FA3B1] transition-colors flex items-center gap-1.5 text-sm font-medium text-[#5B5B5B]">
                     <ChefHat className="w-4 h-4" />
                     How to Cook?
                 </button>
             </DialogTrigger>
 
-            <DialogContent className="max-w-lg">
+            <DialogContent className="max-w-lg rounded-2xl border border-black/10 bg-white/95 shadow-[0_24px_60px_rgba(18,18,18,0.14)]">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl font-serif font-bold flex items-center gap-2">
-                        <ChefHat className="w-6 h-6 text-orange-600" />
+                    <DialogTitle className="text-2xl font-serif font-bold flex items-center gap-2 text-[#121212]">
+                        <ChefHat className="w-6 h-6 text-[#0FA3B1]" />
                         How to Cook?
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="text-[#5B5B5B]">
                         Enter any recipe name and our AI chef will guide you through the
                         cooking process
                     </DialogDescription>
@@ -63,7 +63,7 @@ export default function HowToCookModal() {
                 <form onSubmit={handleSubmit} className="mt-4 space-y-6">
                     {/* Recipe Input */}
                     <div>
-                        <label className="block text-sm font-medium text-stone-700 mb-2">
+                        <label className="block text-sm font-medium text-[#5B5B5B] mb-2">
                             What would you like to cook?
                         </label>
                         <div className="relative">
@@ -72,17 +72,17 @@ export default function HowToCookModal() {
                                 value={recipeName}
                                 onChange={(e) => setRecipeName(e.target.value)}
                                 placeholder="e.g., Chicken Biryani, Chocolate Cake, Pasta Carbonara"
-                                className="w-full px-4 py-3 pr-12 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-900 placeholder:text-stone-400"
+                                className="w-full px-4 py-3 pr-12 border border-black/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0FA3B1] text-[#121212] placeholder:text-[#8B8B8B]"
                                 autoFocus
                             />
-                            <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                            <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8B8B8B]" />
                         </div>
                     </div>
 
                     {/* Examples */}
-                    <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
-                        <h4 className="text-sm font-semibold text-orange-900 mb-2">
-                            💡 Try These:
+                    <div className="bg-[#F7F5F2] rounded-xl p-4 border border-black/10">
+                        <h4 className="text-sm font-semibold text-[#121212] mb-2">
+                            Tip: Try these
                         </h4>
                         <div className="flex flex-wrap gap-2">
                             {["Butter Chicken", "Chocolate Brownies", "Caesar Salad"].map(
@@ -91,7 +91,7 @@ export default function HowToCookModal() {
                                         key={example}
                                         type="button"
                                         onClick={() => setRecipeName(example)}
-                                        className="px-3 py-1 bg-white text-orange-700 border border-orange-200 rounded-full text-sm hover:bg-orange-100 transition-colors"
+                                        className="px-3 py-1 bg-white text-[#0FA3B1] border border-[#0FA3B1]/30 rounded-full text-sm hover:bg-[#0FA3B1]/10 transition-colors"
                                     >
                                         {example}
                                     </button>
@@ -103,7 +103,7 @@ export default function HowToCookModal() {
                     <Button
                         type="submit"
                         disabled={!recipeName.trim()}
-                        className="flex-1 w-full bg-orange-600 hover:bg-orange-700 text-white h-12"
+                        className="flex-1 w-full bg-[#0FA3B1] hover:bg-[#0D8F9B] text-white h-12"
                     >
                         <ChefHat className="w-5 h-5 mr-2" />
                         Get Recipe
